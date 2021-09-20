@@ -1,5 +1,6 @@
 package com.example.dddaggregatesample.v1.domain.model.ingredientcategory
 
-class IngredientItem(
-
+data class IngredientItem(
+        val name: IngredientItemName,
+        val quantity: IngredientItemQuantity
 )
