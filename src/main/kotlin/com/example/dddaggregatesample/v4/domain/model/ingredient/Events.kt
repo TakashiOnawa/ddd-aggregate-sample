@@ -1,7 +1,5 @@
 package com.example.dddaggregatesample.v4.domain.model.ingredient
 
-import com.example.dddaggregatesample.v4.domain.model.ingredientcategory.IngredientCategory
-import com.example.dddaggregatesample.v4.domain.model.ingredientcategory.IngredientCategoryId
 import com.example.dddaggregatesample.v4.domain.model.recipe.RecipeId
 
 interface IngredientEvent
@@ -20,4 +18,8 @@ data class IngredientCategoryDeleted(
         val recipeId: RecipeId,
         val ingredientCategoryId: IngredientCategoryId,
         val orderings: List<IngredientCategoryId>
+) : IngredientEvent
+
+data class IngredientCategoryChanged(
+        val ingredientCategory: IngredientCategory
 ) : IngredientEvent

@@ -1,13 +1,10 @@
-package com.example.dddaggregatesample.v4.domain.model.ingredientcategory
-
-import com.example.dddaggregatesample.v4.domain.support.OptimisticLockingVersion
+package com.example.dddaggregatesample.v4.domain.model.ingredient
 
 // 材料カテゴリ（集約ルート）
 class IngredientCategory private constructor(
         val id: IngredientCategoryId,
         val title: IngredientCategoryTitle,
-        val ingredientItems: List<IngredientItem>,
-        val version: OptimisticLockingVersion
+        val ingredientItems: List<IngredientItem>
 ) {
     companion object {
         private const val INGREDIENT_ITEM_COUNT_MAX = 100
@@ -18,8 +15,7 @@ class IngredientCategory private constructor(
             return IngredientCategory(
                     IngredientCategoryId.newId(),
                     title,
-                    ingredientItems,
-                    OptimisticLockingVersion.initial()
+                    ingredientItems
             )
         }
 
@@ -27,10 +23,9 @@ class IngredientCategory private constructor(
         fun reconstruct(
                 id: IngredientCategoryId,
                 title: IngredientCategoryTitle,
-                ingredientItems: List<IngredientItem>,
-                version: OptimisticLockingVersion
+                ingredientItems: List<IngredientItem>
         ): IngredientCategory {
-            return IngredientCategory(id, title, ingredientItems, version)
+            return IngredientCategory(id, title, ingredientItems)
         }
 
         private fun validateIngredientItems(ingredientItems: List<IngredientItem>) {
@@ -41,20 +36,9 @@ class IngredientCategory private constructor(
     }
 
     // 材料カテゴリを変更する
-    fun change(
-            title: IngredientCategoryTitle,
-            ingredientItems: List<IngredientItem>
-    ): Pair<IngredientCategory, IngredientCategoryChanged> {
-
+    fun change(title: IngredientCategoryTitle, ingredientItems: List<IngredientItem>): IngredientCategory {
         validateIngredientItems(ingredientItems)
-        return IngredientCategory(id, title, ingredientItems, version)
-                .let { Pair(it, IngredientCategoryChanged(it)) }
-    }
-
-    // 楽観的ロックのバージョンを上げる
-    fun updateVersion(nextVersion: OptimisticLockingVersion): IngredientCategory {
-        require(nextVersion.isNext(version))
-        return IngredientCategory(id, title, ingredientItems, nextVersion)
+        return IngredientCategory(id, title, ingredientItems)
     }
 
     override fun equals(other: Any?): Boolean {

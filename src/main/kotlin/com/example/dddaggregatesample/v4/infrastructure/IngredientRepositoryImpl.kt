@@ -22,6 +22,7 @@ class IngredientRepositoryImpl : IngredientRepository {
             is IngredientCategoryAdded -> save(ingredient, event)
             is IngredientCategoriesReordered -> save(ingredient, event)
             is IngredientCategoryDeleted -> save(ingredient, event)
+            is IngredientCategoryChanged -> save(ingredient, event)
             else -> throw IllegalArgumentException("イベントがサポートされていません。event: ${event.javaClass.name}")
         }
     }
@@ -60,6 +61,19 @@ class IngredientRepositoryImpl : IngredientRepository {
         // 省略
         //   version、nextVersion を用いて楽観的ロックをしつつ、
         //   event が持つ情報を利用して材料カテゴリのテーブルから DELETE し、材料カテゴリのテーブルの順番カラムを UPDATE する。
+
+        // 新たなバージョンで更新した集約を返却する。
+        return ingredient.updateVersion(nextVersion)
+    }
+
+    // 材料カテゴリの変更を保存する。
+    private fun save(ingredient: Ingredient, event: IngredientCategoryChanged): Ingredient {
+        val version = ingredient.version
+        val nextVersion = ingredient.version.next()
+
+        // 省略
+        //   version、nextVersion を用いて楽観的ロックをしつつ、
+        //   event が持つ情報を利用して対象の材料カテゴリのテーブルを UPDATE する。
 
         // 新たなバージョンで更新した集約を返却する。
         return ingredient.updateVersion(nextVersion)

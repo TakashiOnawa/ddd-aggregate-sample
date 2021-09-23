@@ -1,4 +1,4 @@
-package com.example.dddaggregatesample.v4.domain.model.ingredientcategory
+package com.example.dddaggregatesample.v4.domain.model.ingredient
 
 import de.huxhorn.sulky.ulid.ULID
 

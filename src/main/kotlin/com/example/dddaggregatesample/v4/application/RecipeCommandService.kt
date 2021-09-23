@@ -1,15 +1,13 @@
 package com.example.dddaggregatesample.v4.application
 
+import com.example.dddaggregatesample.v4.domain.model.ingredient.IngredientCategory
 import com.example.dddaggregatesample.v4.domain.model.ingredient.IngredientRepository
-import com.example.dddaggregatesample.v4.domain.model.ingredientcategory.IngredientCategory
-import com.example.dddaggregatesample.v4.domain.model.ingredientcategory.IngredientCategoryRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
 class RecipeCommandService(
         private val ingredientRepository: IngredientRepository,
-        private val ingredientCategoryRepository: IngredientCategoryRepository
 ) {
     // 材料カテゴリを追加する
     @Transactional
@@ -27,12 +25,16 @@ class RecipeCommandService(
     // 材料カテゴリを変更する
     @Transactional
     fun handle(command: ChangeIngredientCategoryCommand) {
-        val ingredientCategory = ingredientCategoryRepository.findBy(command.id)
-                ?: throw IngredientCategoryNotFound()
+        val ingredient = ingredientRepository.findBy(command.recipeId)
+                ?: throw IngredientNotFound()
 
-        val (newIngredientCategory, event) = ingredientCategory.change(command.title, command.ingredientItems)
+        val (newIngredient, event) = ingredient.changeCategory(
+                command.categoryId,
+                command.categoryTitle,
+                command.ingredientItems
+        )
 
-        ingredientCategoryRepository.save(newIngredientCategory, event)
+        ingredientRepository.save(ingredient, event)
     }
 
     // 材料カテゴリを並び替える
@@ -52,10 +54,7 @@ class RecipeCommandService(
         val ingredient = ingredientRepository.findBy(command.recipeId)
                 ?: throw IngredientNotFound()
 
-        val ingredientCategory = ingredientCategoryRepository.findBy(command.id)
-                ?: throw IngredientCategoryNotFound()
-
-        val (newIngredient, event) = ingredient.deleteCategory(ingredientCategory.id)
+        val (newIngredient, event) = ingredient.deleteCategory(command.categoryId)
 
         ingredientRepository.save(newIngredient, event)
     }
