@@ -6,7 +6,8 @@ interface IngredientEvent
 
 data class IngredientCategoryAdded(
         val recipeId: RecipeId,
-        val ingredientCategory: IngredientCategory
+        val ingredientCategory: IngredientCategory,
+        val ordering: Int
 ) : IngredientEvent
 
 data class IngredientCategoriesReordered(
@@ -21,5 +22,6 @@ data class IngredientCategoryDeleted(
 ) : IngredientEvent
 
 data class IngredientCategoryChanged(
+        val recipeId: RecipeId,
         val ingredientCategory: IngredientCategory
 ) : IngredientEvent

@@ -32,7 +32,7 @@ class Ingredient private constructor(
             require(it.size <= CATEGORIES_COUNT_MAX) {
                 "材料カテゴリは $CATEGORIES_COUNT_MAX 個以下でなければなりません。"
             }
-            Pair(Ingredient(recipeId, it, version), IngredientCategoryAdded(recipeId, category))
+            Pair(Ingredient(recipeId, it, version), IngredientCategoryAdded(recipeId, category, it.size))
         }
     }
 
@@ -83,7 +83,7 @@ class Ingredient private constructor(
                 .let {
                     Pair(
                             Ingredient(recipeId, it, version),
-                            IngredientCategoryChanged(it.single { e -> e.id == categoryId })
+                            IngredientCategoryChanged(recipeId, it.single { e -> e.id == categoryId })
                     )
                 }
     }
