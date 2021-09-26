@@ -11,7 +11,7 @@ data class OptimisticLockingVersion(val value: Long) {
 
     fun next() = OptimisticLockingVersion(value + 1)
 
-    fun isNext(version: OptimisticLockingVersion) = version == this.next()
+    fun isNext(version: OptimisticLockingVersion) = this == version.next()
 }
 
 class OptimisticLockingError : Exception()
